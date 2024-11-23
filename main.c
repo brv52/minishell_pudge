@@ -112,6 +112,7 @@ int	main()
 		print_ast(sh_data.ast_tree, 0);
 		destroy_tokens(sh_data.tokens);
 		destroy_ast_tree(sh_data.ast_tree);
+		destroy_str(&sh_data.u_promt);
 	}
 	free_shell_data(&sh_data);
 	readline_cleanup();
