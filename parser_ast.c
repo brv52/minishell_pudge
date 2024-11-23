@@ -49,7 +49,7 @@ static int	cleanup_parser(t_parser_state *state, int err_code)
 	destroy_stack(&state->op_stack);
 	destroy_stack(&state->out_stack);
 	// if (err_code != -1)
-	if(err_code != -1 && err_code != 2 && state->cur_cmd_node)
+	if(err_code != -1 && err_code != 2 && err_code != 1 && state->cur_cmd_node)
 	{
 		destroy_ast_tree(state->cur_cmd_node);
 		state->cur_cmd_node = NULL;
@@ -93,12 +93,12 @@ void	handle_redir(t_parser_state *state)
 		return ;
 	}
 	tmp_type = state->current->type;
-	state->current = state->current->next;
-	if (state->current->type < 5 || state->current->type > 7)
+	if (!state->current->next || state->current->next->type < 5 || state->current->next->type > 7)
 	{
 		state->ret_state = cleanup_parser(state, 1);
 		return ;
 	}
+	state->current = state->current->next;
 	add_redir(state->cur_cmd_node, &state->current->data, tmp_type);
 }
 

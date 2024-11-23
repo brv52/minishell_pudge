@@ -7,7 +7,7 @@ int	is_op(e_token_type token_type)
 
 int	is_redir(e_token_type token_type)
 {
-	return (token_type >= 1 && token_type < 4);
+	return (token_type >= 1 && token_type <= 4);
 }
 
 int	get_op_priority(e_token_type type)
