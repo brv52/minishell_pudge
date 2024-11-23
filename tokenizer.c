@@ -19,18 +19,24 @@ static e_token_type	get_token_type(t_string *str)
 	return (WORD);
 }
 
+void	destroy_token(t_token *token)
+{
+	destroy_str(&token->data);
+	free_memo((void **)&token);
+}
 
 void	destroy_tokens(t_token *tokens)
 {
 	t_token	*current;
 	t_token	*next;
 
+	if (!tokens || tokens == NULL)
+		return ;
 	current = tokens;
 	while (current)
 	{
 		next = current->next;
-		destroy_str(&current->data);
-		free_memo((void *)current);
+		destroy_token(current);
 		current = next;
 	}
 }

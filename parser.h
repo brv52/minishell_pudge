@@ -38,6 +38,7 @@ typedef struct ast_node
 typedef struct node_stack
 {
 	void				*data;
+	int					type;
 	struct node_stack	*next;
 }	t_node_stack;
 
@@ -58,7 +59,7 @@ typedef struct parser_state
 void		st_init(t_stack *st);
 void		destroy_node(t_node_stack *node);
 void		destroy_stack(t_stack *st);
-void		st_push(t_stack *st, void *data);
+void		st_push(t_stack *st, void *data, int type);
 void		*st_pop(t_stack *st);
 void		*peek(t_stack *st);
 int			is_empty(t_stack *st);

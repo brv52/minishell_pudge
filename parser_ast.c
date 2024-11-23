@@ -27,7 +27,7 @@ static void	add_arg(t_ast_node *cur_cmd_node, t_token *current)
 		c_arg += 1;
 	}
 	n_argv[c_arg] = create_string(current->data.data, current->data.size);
-	free_memo((void *)cur_cmd_node->t_command.argv);
+	free_memo((void **)&cur_cmd_node->t_command.argv);
 	cur_cmd_node->t_command.argv = n_argv;
 	cur_cmd_node->t_command.argc += 1;
 }
@@ -49,7 +49,7 @@ static int	cleanup_parser(t_parser_state *state, int err_code)
 	destroy_stack(&state->op_stack);
 	destroy_stack(&state->out_stack);
 	// if (err_code != -1)
-	if(state->cur_cmd_node)
+	if(err_code != -1 && err_code != 2 && state->cur_cmd_node)
 	{
 		destroy_ast_tree(state->cur_cmd_node);
 		state->cur_cmd_node = NULL;
@@ -68,10 +68,11 @@ void initialize_parser(t_parser_state *state, t_token *tokens)
 
 void	handle_word(t_parser_state *state)
 {
+	printf("word handling: [%s]\n", state->current->data.data);
 	if (state->cur_cmd_node == NULL)
 	{
 		state->cur_cmd_node = crt_command(state->current);
-		st_push(&state->out_stack, state->cur_cmd_node);
+		st_push(&state->out_stack, state->cur_cmd_node, 1);
 	}
 	else
 		add_arg(state->cur_cmd_node, state->current);
@@ -93,7 +94,7 @@ void	handle_redir(t_parser_state *state)
 	}
 	tmp_type = state->current->type;
 	state->current = state->current->next;
-	if (state->current->type != WORD)
+	if (state->current->type < 5 || state->current->type > 7)
 	{
 		state->ret_state = cleanup_parser(state, 1);
 		return ;
@@ -104,7 +105,7 @@ void	handle_redir(t_parser_state *state)
 void	handle_l_bracket(t_parser_state *state)
 {
 	state->cur_cmd_node = NULL;
-	st_push(&state->op_stack, state->current);
+	st_push(&state->op_stack, state->current, 0);
 }
 
 void	handle_r_bracket(t_parser_state *state)
@@ -137,7 +138,7 @@ void	handle_op(t_parser_state *state)
 			return ;
 		}
 	}
-	st_push(&state->op_stack, state->current);
+	st_push(&state->op_stack, state->current, 0);
 }
 
 t_ast_node	*get_root(t_parser_state *state)

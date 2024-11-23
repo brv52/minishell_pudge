@@ -1,11 +1,12 @@
 #include "parser.h"
 
-void	st_push(t_stack *st, void *data)
+void	st_push(t_stack *st, void *data, int type)
 {
 	t_node_stack	*node;
 
 	node = (t_node_stack *)malloc(sizeof(t_node_stack));
 	node->data = data;
+	node->type = type;
 	node->next = st->top;
 	st->top = node;
 }
@@ -19,7 +20,7 @@ void	*st_pop(t_stack *st)
 	node = st->top;
 	data_snap = node->data;
 	st->top = node->next;
-	free_memo((void *)node);
+	free_memo((void **)&node);
 	return (data_snap);
 }
 void	*peek(t_stack *st)

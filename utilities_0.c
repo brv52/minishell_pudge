@@ -1,9 +1,12 @@
 #include "utilities.h"
 
-void	free_memo(void *memo)
+void	free_memo(void **memo)
 {
-	if (memo)
-		free(memo);
+	if (*memo)
+	{
+		free(*memo);
+		*memo = NULL;
+	}
 }
 
 size_t	ft_strlen(const char *str)

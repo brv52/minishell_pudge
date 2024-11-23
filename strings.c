@@ -28,7 +28,7 @@ void	init_str(t_string *str)
 
 void	destroy_str(t_string *str)
 {
-	free_memo((void *)str->data);
+	free_memo((void **)&str->data);
 	str->size = 0;
 }
 int	cmp_str_data(const char *ref, const char *cmp_to)

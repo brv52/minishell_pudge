@@ -18,7 +18,7 @@ typedef struct str
 
 t_string	create_string(const char *ref_data, size_t size);
 void		init_str(t_string *str);
-void		free_memo(void *memo);
+void		free_memo(void **memo);
 size_t		ft_strlen(const char *str);
 void		destroy_str(t_string *str);
 int			cmp_str_data(const char *ref, const char *cmp_to);

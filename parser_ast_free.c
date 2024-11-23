@@ -10,7 +10,7 @@ static void	free_argv(t_ast_node *node)
 		destroy_str(&node->t_command.argv[c_arg]);
 		c_arg += 1;
 	}
-	free_memo((void *)node->t_command.argv);
+	free_memo((void **)&node->t_command.argv);
 	node->t_command.argv = NULL;
 	node->t_command.argc = 0;
 }
@@ -25,14 +25,14 @@ static void	free_redirs(t_ast_node *node)
 	{
 		n_redir = c_redir->next;
 		destroy_str(&c_redir->filename);
-		free_memo((void *)c_redir);
+		free_memo((void **)&c_redir);
 		c_redir = n_redir;
 	}
 }
 
 void	destroy_ast_tree(t_ast_node *node)
 {
-	if (node == NULL) return;
+	if (node == NULL || !node) return;
 
 	if (node->node_type == COMMAND)
 	{
@@ -44,5 +44,5 @@ void	destroy_ast_tree(t_ast_node *node)
 		destroy_ast_tree(node->t_operator.left);
 		destroy_ast_tree(node->t_operator.right);
 	}
-	free_memo((void *)node);
+	free_memo((void **)&node);
 }

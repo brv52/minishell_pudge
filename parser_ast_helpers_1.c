@@ -44,6 +44,6 @@ int	pop_crt_node(t_stack *op_stack, t_stack *out_stack)
 			return (0);
 		}
 	}
-	st_push(out_stack, crt_op_node(op_token->type, left, right));
+	st_push(out_stack, crt_op_node(op_token->type, left, right), 1);
 	return (1);
 }

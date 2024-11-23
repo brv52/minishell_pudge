@@ -2,7 +2,7 @@
 
 static void	prep_promt_data(t_string *u_promt)
 {
-	free_memo((void *)u_promt->data);
+	free_memo((void **)&u_promt->data);
 	init_str(u_promt);
 }
 

@@ -18,6 +18,7 @@ typedef struct token
 }	t_token;
 
 t_token	*tokenize(t_string *u_promt);
+void	destroy_token(t_token *token);
 void	destroy_tokens(t_token *tokens);
 
 #endif

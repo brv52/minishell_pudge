@@ -7,7 +7,7 @@ void	st_init(t_stack *st)
 
 void	destroy_node(t_node_stack *node)
 {
-	free_memo((void *)node);
+	free_memo((void **)&node);
 }
 
 void	destroy_stack(t_stack *st)
@@ -19,7 +19,7 @@ void	destroy_stack(t_stack *st)
 	while (current)
 	{
 		next = current->next;
-		if (current->data)
+		if (current->data && current->type != 0)
 			destroy_ast_tree((t_ast_node *)current->data);
 		destroy_node(current);
 		current = next;
