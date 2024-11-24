@@ -9,7 +9,6 @@ static t_ast_node	*crt_command(t_token *current)
 	cur_cmd_node->t_command.argv = (t_string *)malloc(sizeof(t_string) * 1);
 	cur_cmd_node->t_command.argv[0] = create_string(current->data.data, current->data.size);
 	cur_cmd_node->t_command.argc = 1;
-	cur_cmd_node->t_command.redirs = NULL;
 	return (cur_cmd_node);
 }
 
@@ -76,30 +75,6 @@ void	handle_word(t_parser_state *state)
 	}
 	else
 		add_arg(state->cur_cmd_node, state->current);
-}
-
-void	handle_redir(t_parser_state *state)
-{
-	e_token_type tmp_type;
-
-	if (!state->cur_cmd_node)
-	{
-		state->ret_state = cleanup_parser(state, 0);
-		return ;
-	}
-	if (!state->current)
-	{
-		state->ret_state = cleanup_parser(state, 1);
-		return ;
-	}
-	tmp_type = state->current->type;
-	if (!state->current->next || state->current->next->type < 5 || state->current->next->type > 7)
-	{
-		state->ret_state = cleanup_parser(state, 1);
-		return ;
-	}
-	state->current = state->current->next;
-	add_redir(state->cur_cmd_node, &state->current->data, tmp_type);
 }
 
 void	handle_l_bracket(t_parser_state *state)
@@ -180,8 +155,6 @@ t_ast_node	*parse_tokens(t_token *tokens)
 		printf("c_token: %s %d\n", state.current->data.data, state.current->type);
 		if (state.current->type >= 5 && state.current->type <= 7)
 			handle_word(&state);
-		else if (is_redir(state.current->type))
-			handle_redir(&state);
 		else if (state.current->type == L_BRACKET)
 			handle_l_bracket(&state);
 		else if (state.current->type == R_BRACKET)

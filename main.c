@@ -58,35 +58,24 @@ void	print_ast(t_ast_node *node, int indent) {
 			printf("%s ", node->t_command.argv[i].data);
 		}
 		printf("\n");
-		t_redirection *redir = node->t_command.redirs;
-		while (redir != NULL) {
-			for (int i = 0; i < indent + 1; i++) printf("  ");
-			printf("Redirection: ");
-			switch (redir->redir_type) {
-				case REDIR_IN:
-					printf("< ");
-					break;
-				case REDIR_OUT:
-					printf("> ");
-					break;
-				case APPEND:
-					printf(">> ");
-					break;
-				case HEREDOC:
-					printf("<< ");
-					break;
-				default:
-					break;
-			}
-			printf("%s\n", redir->filename.data);
-			redir = redir->next;
-		}
 	}
 	else if (node->node_type == OPERATOR) {
 		printf("Operator: ");
 		switch (node->t_operator.op_type) {
-			case OP_PIPE:
+			case PIPE:
 				printf("|\n");
+				break;
+			case REDIR_IN:
+				printf("<\n");
+				break;
+			case REDIR_OUT:
+				printf(">\n");
+				break;
+			case APPEND:
+				printf(">>\n");
+				break;
+			case HEREDOC:
+				printf("<<\n");
 				break;
 			default:
 				printf("Unknown operator\n");

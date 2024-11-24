@@ -32,9 +32,14 @@ int	pop_crt_node(t_stack *op_stack, t_stack *out_stack)
 		printf("Operator stack is empty\n");
 		return (0);
 	}
+	if (op_token->type == L_BRACKET)
+	{
+		printf("Missmatched paratheses\n");
+		return (0);
+	}
 	left = NULL;
 	right = (t_ast_node *)st_pop(out_stack);
-	if (!is_redir(op_token->type))
+	if (is_op(op_token->type))
 	{
 		left = (t_ast_node *)st_pop(out_stack);
 		if (!left || !right)

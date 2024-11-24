@@ -15,30 +15,12 @@ static void	free_argv(t_ast_node *node)
 	node->t_command.argc = 0;
 }
 
-static void	free_redirs(t_ast_node *node)
-{
-	t_redirection	*c_redir;
-	t_redirection	*n_redir;
-
-	c_redir = node->t_command.redirs;
-	while (c_redir)
-	{
-		n_redir = c_redir->next;
-		destroy_str(&c_redir->filename);
-		free_memo((void **)&c_redir);
-		c_redir = n_redir;
-	}
-}
-
 void	destroy_ast_tree(t_ast_node *node)
 {
 	if (node == NULL || !node) return;
 
 	if (node->node_type == COMMAND)
-	{
 		free_argv(node);
-		free_redirs(node);
-	}
 	else if (node->node_type == OPERATOR)
 	{
 		destroy_ast_tree(node->t_operator.left);

@@ -24,7 +24,6 @@ typedef struct ast_node
 		{
 			t_string		*argv;
 			size_t			argc;
-			t_redirection	*redirs;
 		}	t_command;
 		struct
 		{
@@ -66,7 +65,6 @@ int			is_empty(t_stack *st);
 int			is_op(e_token_type token_type);
 int			is_redir(e_token_type token_type);
 int			get_op_priority(e_token_type type);
-void		add_redir(t_ast_node *cur_cmd_node, t_string *filename, e_token_type type);
 int			pop_crt_node(t_stack *op_stack, t_stack *out_stack);
 t_ast_node	*parse_tokens(t_token *tokens);
 void		destroy_ast_tree(t_ast_node *node);
