@@ -55,7 +55,7 @@ void	print_ast(t_ast_node *node, int indent) {
 	if (node->node_type == COMMAND) {
 		printf("Command: ");
 		for (size_t i = 0; i < node->t_command.argc; i++) {
-			printf("%s ", node->t_command.argv[i].data);
+			printf("%s ", node->t_command.argv[i]);
 		}
 		printf("\n");
 	}
@@ -93,12 +93,13 @@ int	main()
 	{
 		read_input(&sh_data.u_promt);
 		printf("line_got: [%s]\n", sh_data.u_promt.data);
-		if (sh_data.u_promt.data[0] == 'e')
+		if (sh_data.u_promt.data[0] == '0')
 			break;
 		sh_data.tokens = tokenize(&sh_data.u_promt);
 		print_tokens(sh_data.tokens);
 		sh_data.ast_tree = parse_tokens(sh_data.tokens);
 		print_ast(sh_data.ast_tree, 0);
+		execute_ast_tree(sh_data.ast_tree);
 		destroy_tokens(sh_data.tokens);
 		destroy_ast_tree(sh_data.ast_tree);
 		destroy_str(&sh_data.u_promt);

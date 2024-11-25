@@ -7,7 +7,7 @@ static void	free_argv(t_ast_node *node)
 	c_arg = 0;
 	while (c_arg < node->t_command.argc)
 	{
-		destroy_str(&node->t_command.argv[c_arg]);
+		free_memo((void **)&node->t_command.argv[c_arg]);
 		c_arg += 1;
 	}
 	free_memo((void **)&node->t_command.argv);

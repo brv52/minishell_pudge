@@ -23,5 +23,6 @@ size_t		ft_strlen(const char *str);
 void		destroy_str(t_string *str);
 int			cmp_str_data(const char *ref, const char *cmp_to);
 int			str_chr(char c, const char *str);
+char		*cp_str_data(const char *ref_data);
 
 #endif

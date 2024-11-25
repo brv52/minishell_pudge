@@ -22,7 +22,7 @@ typedef struct ast_node
 	{
 		struct
 		{
-			t_string		*argv;
+			char			**argv;
 			size_t			argc;
 		}	t_command;
 		struct

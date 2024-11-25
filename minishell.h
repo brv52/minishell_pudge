@@ -5,6 +5,7 @@
 #include "input_handler.h"
 #include "tokenizer.h"
 #include "parser.h"
+#include "executor.h"
 
 typedef struct shell_data
 {

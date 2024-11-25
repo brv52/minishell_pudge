@@ -6,8 +6,9 @@ static t_ast_node	*crt_command(t_token *current)
 
 	cur_cmd_node = (t_ast_node *)malloc(sizeof(t_ast_node));
 	cur_cmd_node->node_type = COMMAND;
-	cur_cmd_node->t_command.argv = (t_string *)malloc(sizeof(t_string) * 1);
-	cur_cmd_node->t_command.argv[0] = create_string(current->data.data, current->data.size);
+	cur_cmd_node->t_command.argv = (char **)malloc(sizeof(char *) * 2);
+	cur_cmd_node->t_command.argv[0] = cp_str_data(current->data.data);
+	cur_cmd_node->t_command.argv[1] = NULL;
 	cur_cmd_node->t_command.argc = 1;
 	return (cur_cmd_node);
 }
@@ -15,17 +16,18 @@ static t_ast_node	*crt_command(t_token *current)
 static void	add_arg(t_ast_node *cur_cmd_node, t_token *current)
 {
 	size_t		c_arg;
-	t_string	*n_argv;
+	char		**n_argv;
 
 	c_arg = 0;
-	n_argv = (t_string *)malloc(sizeof(t_string) * (cur_cmd_node->t_command.argc + 1));
+	n_argv = (char **)malloc(sizeof(char *) * (cur_cmd_node->t_command.argc + 2));
 	while (c_arg < cur_cmd_node->t_command.argc)
 	{
-		n_argv[c_arg] = create_string(cur_cmd_node->t_command.argv[c_arg].data, cur_cmd_node->t_command.argv[c_arg].size);
-		destroy_str(&cur_cmd_node->t_command.argv[c_arg]);
+		n_argv[c_arg] = cp_str_data(cur_cmd_node->t_command.argv[c_arg]);
+		free_memo((void **)&cur_cmd_node->t_command.argv[c_arg]);
 		c_arg += 1;
 	}
-	n_argv[c_arg] = create_string(current->data.data, current->data.size);
+	n_argv[c_arg] = cp_str_data(current->data.data);
+	n_argv[c_arg + 1] = NULL;
 	free_memo((void **)&cur_cmd_node->t_command.argv);
 	cur_cmd_node->t_command.argv = n_argv;
 	cur_cmd_node->t_command.argc += 1;
