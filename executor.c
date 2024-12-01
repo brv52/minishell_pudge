@@ -1,14 +1,57 @@
 #include "executor.h"
 
-int	exec_command(t_ast_node *op_node)
+int	is_bin(t_ast_node *node)
+{
+	if (cmp_str_data(node->t_command.argv[0], "echo") == 0)
+		return (1);
+	else if (cmp_str_data(node->t_command.argv[0], "cd") == 0)
+		return (2);
+	else if (cmp_str_data(node->t_command.argv[0], "pwd") == 0)
+		return (3);
+	else if (cmp_str_data(node->t_command.argv[0], "export") == 0)
+		return (4);
+	else if (cmp_str_data(node->t_command.argv[0], "unset") == 0)
+		return (5);
+	else if (cmp_str_data(node->t_command.argv[0], "env") == 0)
+		return (6);
+	else if (cmp_str_data(node->t_command.argv[0], "exit") == 0)
+		return (7);
+	return (0);
+}
+
+int	exec_bin(t_ast_node *node, t_env_map *envs, int bin_id)
+{
+	printf("EXEC_BIN: arg_got [%s]\n", node->t_command.argv[0]);
+	if (bin_id == 1)
+		return (bin_echo(node->t_command.argv, envs));
+	else if (bin_id == 2)
+		return (bin_cd(node->t_command.argv, envs));
+	else if (bin_id == 3)
+		return (bin_pwd(envs));
+	else if (bin_id == 4)
+		return (bin_export(node->t_command.argv, envs));
+	else if (bin_id == 5)
+		return (bin_unset(node->t_command.argv, envs));
+	else if (bin_id == 6)
+		return (bin_env(node->t_command.argv, envs));
+	else if (bin_id == 7)
+		return (bin_exit(node->t_command.argv));
+	return (0);
+}
+
+int	exec_command(t_ast_node *op_node, t_env_map *envs)
 {
 	pid_t	pid;
 	int		status;
+	int		bin_id;
 
 	printf("EXECUTING COMMAND\n");
 	printf("cmd: [%s]\n", op_node->t_command.argv[0]);
 	printf("args: [");
 	size_t	tmp = 1;
+	bin_id = is_bin(op_node);
+	if (bin_id != 0)
+		return (exec_bin(op_node, envs, bin_id));
 	while (op_node->t_command.argc > 1 && op_node->t_command.argv[1] && op_node->t_command.argv[tmp] != NULL)
 	{
 		printf("%s ", op_node->t_command.argv[tmp]);
@@ -27,6 +70,7 @@ int	exec_command(t_ast_node *op_node)
 		waitpid(pid, &status, 0);
 		return (status);
 	}
+	return (-1);
 }
 
 int	reset_std(int saved_stdin, int saved_stdout)
@@ -39,11 +83,12 @@ int	reset_std(int saved_stdin, int saved_stdout)
 	return (1);
 }
 
-int	exec_redir(t_ast_node *redir_node)
+int	exec_redir(t_ast_node *redir_node, t_env_map *envs)
 {
 	printf(" REDIRECTION\n");
 	int	saved_stdin = dup(STDIN_FILENO);
 	int	saved_stdout = dup(STDOUT_FILENO);
+	printf("saved std: %d %d", saved_stdin, saved_stdout);
 	if (saved_stdin < 0 || saved_stdout < 0)
 	{
 		perror("Error saving stdin/stdout");
@@ -94,12 +139,12 @@ int	exec_redir(t_ast_node *redir_node)
 		printf("Wrong op_type\n");
 		return (-1);
 	}
-	int	res = execute_ast_tree(redir_node->t_operator.left);
+	int	res = execute_ast_tree(redir_node->t_operator.left, envs);
 	reset_std(saved_stdin, saved_stdout);
 	return (res);
 }
 
-int exec_pipe(t_ast_node *pipe_node)
+int exec_pipe(t_ast_node *pipe_node, t_env_map *envs)
 {
 	printf("PIPE\n");
 	int		pipe_fd[2];
@@ -118,7 +163,7 @@ int exec_pipe(t_ast_node *pipe_node)
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[1]);
 
-		exit(execute_ast_tree(pipe_node->t_operator.left));
+		exit(execute_ast_tree(pipe_node->t_operator.left, envs));
 	}
 	pid[1] = fork();
 	if (pid[1] == 0)
@@ -127,7 +172,7 @@ int exec_pipe(t_ast_node *pipe_node)
 		dup2(pipe_fd[0], STDIN_FILENO);
 		close(pipe_fd[0]);
 
-		exit(execute_ast_tree(pipe_node->t_operator.right));
+		exit(execute_ast_tree(pipe_node->t_operator.right, envs));
 	}
 	close(pipe_fd[0]);
 	close(pipe_fd[1]);
@@ -136,13 +181,13 @@ int exec_pipe(t_ast_node *pipe_node)
 	return (status[0] && status[1]);
 }
 
-int	exec_operator(t_ast_node *op_node)
+int	exec_operator(t_ast_node *op_node, t_env_map *envs)
 {
 	printf("EXECUTING OPERATOR: ");
 	if (op_node->t_operator.op_type == PIPE)
-		return (exec_pipe(op_node));
+		return (exec_pipe(op_node, envs));
 	else if (is_redir(op_node->t_operator.op_type))
-		return (exec_redir(op_node));
+		return (exec_redir(op_node, envs));
 	else
 	{
 		printf("op_error");
@@ -150,14 +195,14 @@ int	exec_operator(t_ast_node *op_node)
 	}
 }
 
-int	execute_ast_tree(t_ast_node *node)
+int	execute_ast_tree(t_ast_node *node, t_env_map *envs)
 {
 	if (!node)
 		return (-1);
 	if (node->node_type == OPERATOR)
-		return (exec_operator(node));
+		return (exec_operator(node, envs));
 	else if (node->node_type == COMMAND)
-		return (exec_command(node));
+		return (exec_command(node, envs));
 	else
 	{
 		printf("execute_ast_tree error\n");

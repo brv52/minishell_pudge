@@ -78,7 +78,7 @@ static void	handle_words(t_string *u_promt, size_t *c_pos, t_token *new)
 	size_t	start;
 
 	start = *c_pos;
-	while (*c_pos < u_promt->size && u_promt->data[*c_pos] != ' ' && !str_chr(u_promt->data[*c_pos], __METACHARS))
+	while (*c_pos < u_promt->size && u_promt->data[*c_pos] != ' ' && str_chr(u_promt->data[*c_pos], __METACHARS) == -1)
 		*c_pos += 1;
 	new->data = create_string(&u_promt->data[start], *c_pos - start);
 }
@@ -88,7 +88,7 @@ static void	handle_token(t_string *u_promt, size_t *c_pos, t_token *new)
 	new->type = UNDEFINED;
 	if (u_promt->data[*c_pos] == '\'' || u_promt->data[*c_pos] == '"')
 		handle_quotes(u_promt, c_pos, new);
-	else if (str_chr(u_promt->data[*c_pos], __METACHARS))
+	else if (str_chr(u_promt->data[*c_pos], __METACHARS) != -1)
 		handle_metacharacters(u_promt, c_pos, new);
 	else
 		handle_words(u_promt, c_pos, new);

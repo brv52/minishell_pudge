@@ -90,11 +90,23 @@ int	cmp_str_data(const char *ref, const char *cmp_to)
 }
 int	str_chr(char c, const char *str)
 {
-	while (str && *str)
+	int	res;
+
+	res = 0;
+	while (str && str[res])
 	{
-		if (*str == c)
-			return (1);
-		str += 1;
+		if (str[res] == c)
+			return (res);
+		res += 1;
 	}
-	return (0);
+	return (-1);
+}
+char	*chr_in_str_pos(char c, char *str)
+{
+	int	c_pos;
+
+	c_pos = str_chr(c, str);
+	if (c_pos == -1)
+		return (NULL);
+	return (&str[c_pos]);
 }
