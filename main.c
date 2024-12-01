@@ -97,8 +97,8 @@ int	main()
 	{
 		read_input(&sh_data.u_promt);
 		printf("line_got: [%s]\n", sh_data.u_promt.data);
-		if (sh_data.u_promt.data[0] == '0')
-			break;
+		if (!sh_data.u_promt.data)
+			continue ;
 		sh_data.tokens = tokenize(&sh_data.u_promt);
 		print_tokens(sh_data.tokens);
 		sh_data.ast_tree = parse_tokens(sh_data.tokens);
