@@ -146,7 +146,7 @@ void	print_map(t_env_map *map)
 		current = map->data[c_bucket];
 		while (current)
 		{
-			printf("[bucket: %ld] [%s: %s]\n", c_bucket, current->key_val[0].data, current->key_val[1].data);
+			printf("%s=%s\n", current->key_val[0].data, current->key_val[1].data);
 			current = current->next;
 		}
 		c_bucket += 1;

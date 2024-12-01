@@ -21,7 +21,7 @@ int	is_bin(t_ast_node *node)
 
 int	exec_bin(t_ast_node *node, t_env_map *envs, int bin_id)
 {
-	printf("EXEC_BIN: arg_got [%s]\n", node->t_command.argv[0]);
+	printf("EXEC_BIN: bin_got [%s]\n", node->t_command.argv[0]);
 	if (bin_id == 1)
 		return (bin_echo(node->t_command.argv, envs));
 	else if (bin_id == 2)
@@ -50,14 +50,14 @@ int	exec_command(t_ast_node *op_node, t_env_map *envs)
 	printf("args: [");
 	size_t	tmp = 1;
 	bin_id = is_bin(op_node);
-	if (bin_id != 0)
-		return (exec_bin(op_node, envs, bin_id));
 	while (op_node->t_command.argc > 1 && op_node->t_command.argv[1] && op_node->t_command.argv[tmp] != NULL)
 	{
 		printf("%s ", op_node->t_command.argv[tmp]);
 		tmp += 1;
 	}
 	printf("]\n");
+	if (bin_id != 0)
+		return (exec_bin(op_node, envs, bin_id));
 	pid = fork();
 	if (pid == 0)
 	{

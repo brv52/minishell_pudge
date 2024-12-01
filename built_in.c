@@ -153,21 +153,12 @@ int	bin_unset(char **argv, t_env_map *envs)
 
 int	bin_env(char **argv, t_env_map *envs)
 {
-	t_env	*g_env;
-
-	if (!argv || !argv[0] || !argv[1] || (argv[1] && argv[2]))
+	if (!argv || !argv[0] || argv[1])
 	{
 		printf("env: arguments error\n");
 		return (-1);
 	}
 	print_map(envs);
-	g_env = env_get(envs, argv[1]);
-	if (!g_env)
-	{
-		printf("env: env not found\n");
-		return (-1);
-	}
-	printf("%s=%s\n", g_env->key_val[0].data, g_env->key_val[1].data);
 	return (0);
 }
 
