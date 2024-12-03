@@ -4,7 +4,7 @@ SAN = -fsanitize=address -g
 LFLAGS = -lreadline
 
 TARGET = minishell
-SRCS = built_in.c enviromentals.c executor.c ft_atoi.c input_handler.c main.c parser.c parser_ast.c parser_ast_free.c parser_ast_helpers_0.c parser_ast_helpers_1.c parser_stack_helpers.c parser_stack_ops.c strings.c tokenizer.c utilities_0.c
+SRCS = built_in.c enviromentals.c executor.c ft_atoi.c input_handler.c main.c parser.c parser_ast.c parser_ast_free.c parser_ast_helpers_0.c parser_ast_helpers_1.c parser_stack_helpers.c parser_stack_ops.c strings.c tokenizer.c utilities_0.c expander.c
 OBJS = $(SRCS:.c=.o)
 
 all: $(TARGET)

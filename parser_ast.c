@@ -7,7 +7,10 @@ static t_ast_node	*crt_command(t_token *current)
 	cur_cmd_node = (t_ast_node *)malloc(sizeof(t_ast_node));
 	cur_cmd_node->node_type = COMMAND;
 	cur_cmd_node->t_command.argv = (char **)malloc(sizeof(char *) * 2);
+	cur_cmd_node->t_command.types = (e_token_type *)malloc(sizeof(e_token_type) * 2);
 	cur_cmd_node->t_command.argv[0] = cp_str_data(current->data.data);
+	cur_cmd_node->t_command.types[0] = current->type;
+	cur_cmd_node->t_command.types[1] = UNDEFINED;
 	cur_cmd_node->t_command.argv[1] = NULL;
 	cur_cmd_node->t_command.argc = 1;
 	return (cur_cmd_node);
@@ -15,21 +18,28 @@ static t_ast_node	*crt_command(t_token *current)
 
 static void	add_arg(t_ast_node *cur_cmd_node, t_token *current)
 {
-	size_t		c_arg;
-	char		**n_argv;
+	size_t			c_arg;
+	char			**n_argv;
+	e_token_type	*n_types;
 
 	c_arg = 0;
 	n_argv = (char **)malloc(sizeof(char *) * (cur_cmd_node->t_command.argc + 2));
+	n_types = (e_token_type *)malloc(sizeof(e_token_type) * (cur_cmd_node->t_command.argc + 2));
 	while (c_arg < cur_cmd_node->t_command.argc)
 	{
 		n_argv[c_arg] = cp_str_data(cur_cmd_node->t_command.argv[c_arg]);
 		free_memo((void **)&cur_cmd_node->t_command.argv[c_arg]);
+		n_types[c_arg] = cur_cmd_node->t_command.types[c_arg];
 		c_arg += 1;
 	}
 	n_argv[c_arg] = cp_str_data(current->data.data);
+	n_types[c_arg] = current->type;
 	n_argv[c_arg + 1] = NULL;
+	n_types[c_arg + 1] = UNDEFINED;
 	free_memo((void **)&cur_cmd_node->t_command.argv);
+	free_memo((void **)&cur_cmd_node->t_command.types);
 	cur_cmd_node->t_command.argv = n_argv;
+	cur_cmd_node->t_command.types = n_types;
 	cur_cmd_node->t_command.argc += 1;
 }
 

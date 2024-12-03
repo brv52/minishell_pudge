@@ -46,6 +46,8 @@ int	exec_command(t_ast_node *op_node, t_env_map *envs)
 	int		bin_id;
 
 	printf("EXECUTING COMMAND\n");
+	if (expand_args(op_node->t_command.argv, op_node->t_command.types, envs) < 0)
+		return (-1);
 	printf("cmd: [%s]\n", op_node->t_command.argv[0]);
 	printf("args: [");
 	size_t	tmp = 1;

@@ -11,6 +11,7 @@ static void	free_argv(t_ast_node *node)
 		c_arg += 1;
 	}
 	free_memo((void **)&node->t_command.argv);
+	free_memo((void **)&node->t_command.types);
 	node->t_command.argv = NULL;
 	node->t_command.argc = 0;
 }

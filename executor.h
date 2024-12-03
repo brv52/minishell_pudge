@@ -4,6 +4,7 @@
 #include "parser.h"
 #include "enviromentals.h"
 #include "built_in.h"
+#include "expander.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>

@@ -23,6 +23,7 @@ typedef struct ast_node
 		struct
 		{
 			char			**argv;
+			e_token_type	*types;
 			size_t			argc;
 		}	t_command;
 		struct
