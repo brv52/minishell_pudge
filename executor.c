@@ -131,8 +131,34 @@ int	exec_redir(t_ast_node *redir_node, t_env_map *envs)
 	}
 	else if (redir_node->t_operator.op_type == HEREDOC)
 	{
-		printf("HEREDOC TODO\n");
-		return (0);
+		char	*u_input;
+		int		pipe_fd[2];
+
+		if (pipe(pipe_fd) < 0)
+		{
+			printf("pipe error\n");
+			return (-1);
+		}
+		while (1)
+		{
+			u_input = readline("> ");
+			if (!u_input)
+			{
+				printf("heredoc: eliminated by EOF\n");
+				break ;
+			}
+			if (cmp_str_data(u_input, redir_node->t_operator.right->t_command.argv[0]) == 0)
+			{
+				free(u_input);
+				break ;
+			}
+			write(pipe_fd[1], u_input, ft_strlen(u_input));
+			write(pipe_fd[1], "\n", 1);
+			free(u_input);
+		}
+		close(pipe_fd[1]);
+		dup2(pipe_fd[0], STDIN_FILENO);
+		close(pipe_fd[0]);
 	}
 	else
 	{
