@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+sig_atomic_t g_signal = 0;
+
 static void	free_shell_data(t_shell_data *sh_data)
 {
 	destroy_str(&sh_data->u_promt);
@@ -91,14 +93,17 @@ int	main()
 {
 	t_shell_data sh_data;
 	init_map(&sh_data.envs, 1024);
-	sh_data.u_promt.data = NULL;
+    sig_init();
+    sh_data.u_promt.data = NULL;
 	printf("PWD: %s\nHOME: %s\n", env_get(&sh_data.envs, "PWD")->key_val[1].data, env_get(&sh_data.envs, "HOME")->key_val[1].data);
 	while (1)
 	{
-		read_input(&sh_data.u_promt);
+        read_input(&sh_data.u_promt);
 		printf("line_got: [%s]\n", sh_data.u_promt.data);
 		if (!sh_data.u_promt.data)
-			continue ;
+            break;
+        if (sh_data.u_promt.data[0] == '\0')
+            continue;
 		sh_data.tokens = tokenize(&sh_data.u_promt);
 		print_tokens(sh_data.tokens);
 		sh_data.ast_tree = parse_tokens(sh_data.tokens);
