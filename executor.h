@@ -10,6 +10,8 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
+extern sig_atomic_t g_signal;
+
 int	execute_ast_tree(t_ast_node *node, t_env_map *envs);
 
 #endif

@@ -8,6 +8,7 @@
 #include "executor.h"
 #include "enviromentals.h"
 #include "built_in.h"
+#include "signal_handler.h"
 
 typedef struct shell_data
 {
