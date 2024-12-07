@@ -1,4 +1,5 @@
 #include "executor.h"
+#include "signal_handler.h"
 
 int	is_bin(t_ast_node *node)
 {
@@ -63,13 +64,27 @@ int	exec_command(t_ast_node *op_node, t_env_map *envs)
 	pid = fork();
 	if (pid == 0)
 	{
+        signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
 		execve(op_node->t_command.argv[0], op_node->t_command.argv, NULL);
 		perror("execve failed");
 		exit(0);
 	}
 	else
 	{
-		waitpid(pid, &status, 0);
+        signal(SIGINT, second_hand);
+        // signal(SIGQUIT, SIG_DFL);
+        waitpid(pid, &status, 0);
+        if (WIFSIGNALED(status))
+        {
+            int sig = WTERMSIG(status);
+            if (sig == SIGQUIT)
+                printf("Quit    %s\n", op_node->t_command.argv[0]);
+            else if (sig == SIGINT)
+                write(STDOUT_FILENO, "\n", 1);
+        }
+        signal(SIGINT, handle_signal);
+        signal(SIGQUIT, SIG_IGN);
 		return (status);
 	}
 	return (-1);
@@ -204,8 +219,10 @@ int exec_pipe(t_ast_node *pipe_node, t_env_map *envs)
 	}
 	close(pipe_fd[0]);
 	close(pipe_fd[1]);
+    signal(SIGINT, second_hand);
 	waitpid(pid[0], &status[0], 0);
 	waitpid(pid[1], &status[1], 0);
+    piping_sign(status, pipe_node);
 	return (status[0] && status[1]);
 }
 
