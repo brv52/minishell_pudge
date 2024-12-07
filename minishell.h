@@ -10,6 +10,8 @@
 #include "built_in.h"
 #include "signal_handler.h"
 
+extern sig_atomic_t g_signal;
+
 typedef struct shell_data
 {
 	t_string	u_promt;
