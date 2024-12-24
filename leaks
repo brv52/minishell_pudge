@@ -33,7 +33,7 @@
 ==83432== 5 bytes in 1 blocks are still reachable in loss record 5 of 90
 ==83432==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
 ==83432==    by 0x10BD54: cp_str_data (in /home/borov/Projects/42_folder/circle_3/minishell/minishell)
-==83432==    by 0x10B0BA: crt_command (in /home/borov/Projects/42_folder/circle_3/minishell/minishell)
+==83432==    by 0x10B0BA: crs_command (in /home/borov/Projects/42_folder/circle_3/minishell/minishell)
 ==83432==    by 0x10B398: handle_word (in /home/borov/Projects/42_folder/circle_3/minishell/minishell)
 ==83432==    by 0x10B75F: parse_tokens (in /home/borov/Projects/42_folder/circle_3/minishell/minishell)
 ==83432==    by 0x10B00A: main (in /home/borov/Projects/42_folder/circle_3/minishell/minishell)
@@ -48,7 +48,7 @@
 
 ==83432== 16 bytes in 1 blocks are still reachable in loss record 19 of 90
 ==83432==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==83432==    by 0x10B098: crt_command (in /home/borov/Projects/42_folder/circle_3/minishell/minishell)
+==83432==    by 0x10B098: crs_command (in /home/borov/Projects/42_folder/circle_3/minishell/minishell)
 ==83432==    by 0x10B398: handle_word (in /home/borov/Projects/42_folder/circle_3/minishell/minishell)
 ==83432==    by 0x10B75F: parse_tokens (in /home/borov/Projects/42_folder/circle_3/minishell/minishell)
 ==83432==    by 0x10B00A: main (in /home/borov/Projects/42_folder/circle_3/minishell/minishell)
@@ -60,7 +60,7 @@
 ==83432==
 ==83432== 32 bytes in 1 blocks are still reachable in loss record 24 of 90
 ==83432==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==83432==    by 0x10B080: crt_command (in /home/borov/Projects/42_folder/circle_3/minishell/minishell)
+==83432==    by 0x10B080: crs_command (in /home/borov/Projects/42_folder/circle_3/minishell/minishell)
 ==83432==    by 0x10B398: handle_word (in /home/borov/Projects/42_folder/circle_3/minishell/minishell)
 ==83432==    by 0x10B75F: parse_tokens (in /home/borov/Projects/42_folder/circle_3/minishell/minishell)
 ==83432==    by 0x10B00A: main (in /home/borov/Projects/42_folder/circle_3/minishell/minishell)

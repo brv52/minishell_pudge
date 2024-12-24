@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_stack_ops.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: borov <borov@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/24 22:34:55 by borov             #+#    #+#             */
+/*   Updated: 2024/12/24 22:35:07 by borov            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parser.h"
 
 void	st_push(t_stack *st, void *data, int type)
@@ -10,6 +22,7 @@ void	st_push(t_stack *st, void *data, int type)
 	node->next = st->top;
 	st->top = node;
 }
+
 void	*st_pop(t_stack *st)
 {
 	t_node_stack	*node;
@@ -23,6 +36,7 @@ void	*st_pop(t_stack *st)
 	free_memo((void **)&node);
 	return (data_snap);
 }
+
 void	*peek(t_stack *st)
 {
 	if (!st->top)

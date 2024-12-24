@@ -1,37 +1,54 @@
-#ifndef PARSER_H
-#define PARSER_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: borov <borov@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/24 22:23:13 by borov             #+#    #+#             */
+/*   Updated: 2024/12/24 22:57:59 by borov            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include "utilities.h"
-#include "tokenizer.h"
-#include "redirections.h"
+#ifndef PARSER_H
+# define PARSER_H
+
+# include "utilities.h"
+# include "tokenizer.h"
+# include "redirections.h"
 
 typedef enum ast_node_type
 {
-	COMMAND, OPERATOR
-}	e_ast_node_type;
+	COMMAND,
+	OPERATOR
+}	t_ast_node_type;
 
 typedef enum op_priority
 {
-	OP_PIPE, OP_REDIR_IN, OP_REDIR_OUT, OP_APPEND, OP_HEREDOC
-}	e_op_priority;
+	OP_PIPE,
+	OP_REDIR_IN,
+	OP_REDIR_OUT,
+	OP_APPEND,
+	OP_HEREDOC
+}	t_op_priority;
 
 typedef struct ast_node
 {
-	e_ast_node_type node_type;
+	t_ast_node_type	node_type;
 	union
 	{
 		struct
 		{
 			char			**argv;
-			e_token_type	*types;
+			t_token_type	*types;
 			size_t			argc;
-		}	t_command;
+		}	s_command;
 		struct
 		{
-			e_token_type	op_type;
+			t_token_type	op_type;
 			struct ast_node	*left;
 			struct ast_node	*right;
-		}	t_operator;
+		}	s_operator;
 	};
 }	t_ast_node;
 
@@ -63,11 +80,19 @@ void		st_push(t_stack *st, void *data, int type);
 void		*st_pop(t_stack *st);
 void		*peek(t_stack *st);
 int			is_empty(t_stack *st);
-int			is_op(e_token_type token_type);
-int			is_redir(e_token_type token_type);
-int			get_op_priority(e_token_type type);
+int			is_op(t_token_type token_type);
+int			is_redir(t_token_type token_type);
+int			get_op_priority(t_token_type type);
 int			pop_crt_node(t_stack *op_stack, t_stack *out_stack);
 t_ast_node	*parse_tokens(t_token *tokens);
 void		destroy_ast_tree(t_ast_node *node);
+void		handle_word(t_parser_state *state);
+void		handle_l_bracket(t_parser_state *state);
+void		handle_r_bracket(t_parser_state *state);
+void		handle_op(t_parser_state *state);
+void		initialize_parser(t_parser_state *state, t_token *tokens);
+t_ast_node	*crs_command(t_token *current);
+void		add_arg(t_ast_node *cur_cmd_node, t_token *current);
+int			cleanup_parser(t_parser_state *state, int err_code);
 
 #endif

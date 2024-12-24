@@ -1,9 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenizer.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: borov <borov@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/24 22:42:13 by borov             #+#    #+#             */
+/*   Updated: 2024/12/24 22:58:35 by borov            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "tokenizer.h"
 
-static e_token_type	get_token_type(t_string *str)
+t_token_type	get_token_type(t_string *str)
 {
+	if (!str || !str->data)
+		return (UNDEFINED);
 	if (cmp_str_data(str->data, "|") == 0)
 		return (PIPE);
+	else if (cmp_str_data(str->data, "||") == 0)
+		return (OR);
+	else if (cmp_str_data(str->data, "&&") == 0)
+		return (AND);
 	else if (cmp_str_data(str->data, "<") == 0)
 		return (REDIR_IN);
 	else if (cmp_str_data(str->data, ">") == 0)
@@ -41,59 +59,11 @@ void	destroy_tokens(t_token *tokens)
 	}
 }
 
-static void	handle_quotes(t_string *u_promt, size_t *c_pos, t_token *new)
+static void	*handle_err(t_token *new, t_token *head)
 {
-	char	quote;
-	size_t	start;
-
-	quote = u_promt->data[*c_pos];
-	*c_pos += 1;
-	start = *c_pos;
-	while (*c_pos < u_promt->size && u_promt->data[*c_pos] != quote)
-		*c_pos += 1;
-	new->data = create_string(&u_promt->data[start], *c_pos - start);
-	*c_pos += 1;
-	if (quote == '\'')
-		new->type = S_QUOTE;
-	else if (quote == '"')
-		new->type = D_QUOTE;
-}
-
-static void	handle_metacharacters(t_string *u_promt, size_t *c_pos, t_token *new)
-{
-	if ((u_promt->data[*c_pos] == '&' || u_promt->data[*c_pos] == '|' || u_promt->data[*c_pos] == '<' || u_promt->data[*c_pos] == '>') && u_promt->data[*c_pos + 1] == u_promt->data[*c_pos])
-	{
-		new->data = create_string(&u_promt->data[*c_pos], 2);
-		*c_pos += 2;
-	}
-	else
-	{
-		new->data = create_string(&u_promt->data[*c_pos], 1);
-		*c_pos += 1;
-	}
-}
-
-static void	handle_words(t_string *u_promt, size_t *c_pos, t_token *new)
-{
-	size_t	start;
-
-	start = *c_pos;
-	while (*c_pos < u_promt->size && u_promt->data[*c_pos] != ' ' && str_chr(u_promt->data[*c_pos], __METACHARS) == -1)
-		*c_pos += 1;
-	new->data = create_string(&u_promt->data[start], *c_pos - start);
-}
-
-static void	handle_token(t_string *u_promt, size_t *c_pos, t_token *new)
-{
-	new->type = UNDEFINED;
-	if (u_promt->data[*c_pos] == '\'' || u_promt->data[*c_pos] == '"')
-		handle_quotes(u_promt, c_pos, new);
-	else if (str_chr(u_promt->data[*c_pos], __METACHARS) != -1)
-		handle_metacharacters(u_promt, c_pos, new);
-	else
-		handle_words(u_promt, c_pos, new);
-	if (new->type == UNDEFINED)
-		new->type = get_token_type(&new->data);
+	destroy_token(new);
+	destroy_tokens(head);
+	return (NULL);
 }
 
 t_token	*tokenize(t_string *u_promt)
@@ -115,7 +85,8 @@ t_token	*tokenize(t_string *u_promt)
 		}
 		new = (t_token *)malloc(sizeof(t_token));
 		new->next = NULL;
-		handle_token(u_promt, &c_pos, new);
+		if (handle_token(u_promt, &c_pos, new) != 0)
+			return (handle_err(new, head));
 		*current = new;
 		current = &new->next;
 	}
