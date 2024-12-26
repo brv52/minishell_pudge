@@ -6,11 +6,12 @@
 /*   By: borov <borov@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/25 21:07:45 by borov             #+#    #+#             */
-/*   Updated: 2024/12/25 21:21:29 by borov            ###   ########.fr       */
+/*   Updated: 2024/12/26 05:19:37 by borov            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "./minishell_debug/debug_minishell.h"
 
 sig_atomic_t	g_signal;
 
@@ -18,10 +19,6 @@ static void	free_shell_data(t_shell_data *sh_data)
 {
 	destroy_str(&sh_data->u_promt);
 	destroy_map(&sh_data->envs);
-}
-
-static void	readline_cleanup(void)
-{
 	rl_clear_history();
 }
 
@@ -53,28 +50,33 @@ static int	execute_iteration(t_shell_data *sh_data)
 		data_cleanup(sh_data);
 		return (1);
 	}
+	data_cleanup(sh_data);
 	return (0);
+}
+
+static void	shell_loop(t_shell_data *sh_data)
+{
+	while (1)
+	{
+		read_input(&sh_data->u_promt, env_get_status(&sh_data->envs));
+		if (!sh_data->u_promt.data)
+			break ;
+		if (sh_data->u_promt.data[0] == '\0')
+			continue ;
+		if (execute_iteration(sh_data) != 0)
+			continue ;
+		env_update(&sh_data->envs, "?", "0");
+	}
 }
 
 int	main(void)
 {
 	t_shell_data	sh_data;
 
-	init_map(&sh_data.envs, 1024);
+	init_map(&sh_data.envs, 64);
 	sig_init();
 	sh_data.u_promt.data = NULL;
-	while (1)
-	{
-		read_input(&sh_data.u_promt, env_get_status(&sh_data.envs));
-		if (!sh_data.u_promt.data)
-			break ;
-		if (sh_data.u_promt.data[0] == '\0')
-			continue ;
-		if (execute_iteration(&sh_data) != 0)
-			continue ;
-		data_cleanup(&sh_data);
-		env_update(&sh_data.envs, "?", "0");
-	}
+	shell_loop(&sh_data);
 	free_shell_data(&sh_data);
-	readline_cleanup();
+	return (0);
 }

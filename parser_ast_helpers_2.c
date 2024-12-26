@@ -6,7 +6,7 @@
 /*   By: borov <borov@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/24 22:24:55 by borov             #+#    #+#             */
-/*   Updated: 2024/12/24 22:34:29 by borov            ###   ########.fr       */
+/*   Updated: 2024/12/26 03:05:25 by borov            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	handle_word(t_parser_state *state)
 {
 	if (state->cur_cmd_node == NULL)
 	{
-		state->cur_cmd_node = crs_command(state->current);
+		state->cur_cmd_node = crt_command(state->current);
 		st_push(&state->out_stack, state->cur_cmd_node, 1);
 	}
 	else

@@ -6,7 +6,7 @@
 /*   By: borov <borov@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/24 20:49:04 by borov             #+#    #+#             */
-/*   Updated: 2024/12/24 22:53:41 by borov            ###   ########.fr       */
+/*   Updated: 2024/12/26 01:50:02 by borov            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,6 @@ int		env_remove(t_env_map *map, const char *key);
 void	destroy_map(t_env_map *map);
 void	print_map(t_env_map *map);
 int		env_get_status(t_env_map *map);
-void	env_update(t_env_map *map, char *key, char *val);
+int		env_update(t_env_map *map, const char *key, const char *val);
 
 #endif

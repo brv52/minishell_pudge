@@ -6,7 +6,7 @@
 /*   By: borov <borov@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/24 20:38:16 by borov             #+#    #+#             */
-/*   Updated: 2024/12/24 20:49:44 by borov            ###   ########.fr       */
+/*   Updated: 2024/12/26 01:45:35 by borov            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int	init_map(t_env_map *map, size_t buckets)
 	}
 	env_add(map, "PWD", getenv("PWD"));
 	env_add(map, "HOME", getenv("HOME"));
+	env_add(map, "PATH", getenv("PATH"));
 	env_add(map, "?", "0");
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: borov <borov@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/24 21:51:21 by borov             #+#    #+#             */
-/*   Updated: 2024/12/24 22:51:30 by borov            ###   ########.fr       */
+/*   Updated: 2024/12/26 05:18:21 by borov            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,31 @@ static void	exec_child(t_ast_node *pipe_node, t_env_map *envs,
 	}
 }
 
-int	exec_connector(t_ast_node *pipe_node, t_env_map *envs)
+int	exec_or(t_ast_node *pipe_node, t_env_map *envs)
+{
+	int		pipe_fd[2];
+	pid_t	pid[2];
+	int		status[2];
+
+	if (pipe(pipe_fd) == -1)
+		return (throw_conn_error());
+	pid[0] = fork();
+	if (pid[0] == 0)
+		exec_child(pipe_node, envs, pipe_fd, 0);
+	pid[1] = fork();
+	if (pid[1] == 0)
+		exec_child(pipe_node, envs, pipe_fd, 1);
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
+	signal(SIGINT, second_hand);
+	waitpid(pid[0], &status[0], 0);
+	waitpid(pid[1], &status[1], 0);
+	signal(SIGINT, handle_signal);
+	piping_sign(status, pipe_node);
+	return (get_ret_val(pipe_node->s_operator.op_type, status));
+}
+
+int	exec_and(t_ast_node *pipe_node, t_env_map *envs)
 {
 	int		pipe_fd[2];
 	pid_t	pid[2];
@@ -62,7 +86,7 @@ int	exec_connector(t_ast_node *pipe_node, t_env_map *envs)
 	close(pipe_fd[1]);
 	signal(SIGINT, second_hand);
 	waitpid(pid[0], &status[0], 0);
-	if (pipe_node->s_operator.op_type == AND && WEXITSTATUS(status[0]) != 0)
+	if (WEXITSTATUS(status[0]) != 0)
 	{
 		close (pipe_fd[0]);
 		return (1);

@@ -6,7 +6,7 @@
 /*   By: borov <borov@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/24 20:49:55 by borov             #+#    #+#             */
-/*   Updated: 2024/12/24 22:07:40 by borov            ###   ########.fr       */
+/*   Updated: 2024/12/26 03:53:31 by borov            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	env_add(t_env_map *map, const char *key, const char *val)
 	while (current)
 	{
 		if (cmp_str_data(current->key_val[0].data, key) == 0)
-			throw_env_add_error(1, &current->key_val[1]);
+			return (env_update(map, key, val));
 		if (!current->next)
 			break ;
 		current = current->next;
@@ -55,20 +55,15 @@ int	env_add(t_env_map *map, const char *key, const char *val)
 
 t_env	*env_get(t_env_map *map, const char *key)
 {
-	char	*res;
 	t_env	*stored;
 
-	res = getenv(key);
 	stored = map->data[hash(key) % map->buckets];
 	while (stored && cmp_str_data(stored->key_val[0].data, key) != 0)
 		stored = stored->next;
 	if (stored && cmp_str_data(stored->key_val[0].data, key) != 0)
 		stored = NULL;
-	if (res && !stored)
-	{
-		env_add(map, key, res);
-		return (env_get(map, key));
-	}
+	if (!stored)
+		return (NULL);
 	return (stored);
 }
 

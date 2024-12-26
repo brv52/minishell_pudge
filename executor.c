@@ -6,13 +6,13 @@
 /*   By: borov <borov@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/24 21:03:58 by borov             #+#    #+#             */
-/*   Updated: 2024/12/24 22:29:02 by borov            ###   ########.fr       */
+/*   Updated: 2024/12/26 04:13:12 by borov            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 
-int	throw_exec_error(int err_code)
+int	throw_redir_error(int err_code, int s_stdin, int s_stdout)
 {
 	if (err_code == 0)
 		write(STDERR_FILENO,
@@ -28,9 +28,15 @@ int	throw_exec_error(int err_code)
 			"executor_redir_heredoc: pipe creation error\n", 44);
 	else if (err_code == 5)
 		write(STDERR_FILENO, "executor_redir: unknown redirection type\n", 41);
-	else if (err_code == 6)
+	reset_std(s_stdin, s_stdout);
+	return (1);
+}
+
+int	throw_exec_error(int err_code)
+{
+	if (err_code == 0)
 		write(STDERR_FILENO, "executor_operator: unknown operator type\n", 41);
-	else if (err_code == 7)
+	else if (err_code == 1)
 		write(STDERR_FILENO, "executor_tree: unknown node type\n", 33);
 	return (1);
 }
@@ -47,13 +53,14 @@ int	reset_std(int saved_stdin, int saved_stdout)
 int	exec_operator(t_ast_node *op_node, t_env_map *envs)
 {
 	if (op_node->s_operator.op_type == PIPE
-		|| op_node->s_operator.op_type == OR
-		|| op_node->s_operator.op_type == AND)
-		return (exec_connector(op_node, envs));
+		|| op_node->s_operator.op_type == OR)
+		return (exec_or(op_node, envs));
+	else if (op_node->s_operator.op_type == AND)
+		return (exec_and(op_node, envs));
 	else if (is_redir(op_node->s_operator.op_type))
 		return (exec_redir(op_node, envs));
 	else
-		return (throw_exec_error(6));
+		return (throw_exec_error(0));
 }
 
 int	execute_ast_tree(t_ast_node *node, t_env_map *envs)
@@ -65,5 +72,5 @@ int	execute_ast_tree(t_ast_node *node, t_env_map *envs)
 	else if (node->node_type == COMMAND)
 		return (exec_command(node, envs));
 	else
-		return (throw_exec_error(7));
+		return (throw_exec_error(1));
 }

@@ -6,7 +6,7 @@
 /*   By: borov <borov@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/24 22:23:13 by borov             #+#    #+#             */
-/*   Updated: 2024/12/24 22:57:59 by borov            ###   ########.fr       */
+/*   Updated: 2024/12/26 03:05:25 by borov            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void		handle_l_bracket(t_parser_state *state);
 void		handle_r_bracket(t_parser_state *state);
 void		handle_op(t_parser_state *state);
 void		initialize_parser(t_parser_state *state, t_token *tokens);
-t_ast_node	*crs_command(t_token *current);
+t_ast_node	*crt_command(t_token *current);
 void		add_arg(t_ast_node *cur_cmd_node, t_token *current);
 int			cleanup_parser(t_parser_state *state, int err_code);
 

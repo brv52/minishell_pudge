@@ -6,13 +6,13 @@
 /*   By: borov <borov@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/24 22:29:19 by borov             #+#    #+#             */
-/*   Updated: 2024/12/24 23:11:23 by borov            ###   ########.fr       */
+/*   Updated: 2024/12/26 03:05:25 by borov            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-t_ast_node	*crs_command(t_token *current)
+t_ast_node	*crt_command(t_token *current)
 {
 	t_ast_node	*cur_cmd_node;
 

@@ -6,7 +6,7 @@
 /*   By: borov <borov@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/24 22:41:39 by borov             #+#    #+#             */
-/*   Updated: 2024/12/24 23:00:57 by borov            ###   ########.fr       */
+/*   Updated: 2024/12/26 02:29:44 by borov            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,5 +43,6 @@ int			is_num(char c);
 int			is_al_num(char c);
 t_string	str_cat(const char *a, const char *b);
 int			ft_atoi(char *nptr);
+char		**ft_slash_split(char const *s, char c);
 
 #endif
