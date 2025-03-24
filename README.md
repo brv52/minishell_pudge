@@ -1,1 +1,1 @@
-master origin
+42 project. Simplified version of linux shell
